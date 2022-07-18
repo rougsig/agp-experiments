@@ -8,4 +8,22 @@
  * This project uses @Incubating APIs which are subject to change.
  */
 
+pluginManagement {
+  repositories {
+    gradlePluginPortal()
+    google()
+  }
+}
+
+dependencyResolutionManagement {
+  repositories {
+    mavenCentral()
+    google()
+  }
+}
+
 rootProject.name = 'agp-experiments'
+
+include(
+  ':app',
+)
