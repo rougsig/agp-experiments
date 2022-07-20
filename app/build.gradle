@@ -1,9 +1,25 @@
 plugins {
     id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+Task generateKotlinCodeTask = tasks.create("generateKotlinCode") {
+    File output = file("build/generated/kotlin-code")
+    outputs.dir(output)
+
+    doLast {
+        output.mkdirs()
+        File kotlinCodeFile = new File(output, "KotlinCode.kt")
+        kotlinCodeFile.delete()
+        kotlinCodeFile << "package com.example\n"
+        kotlinCodeFile << "class KotlinCode {\n"
+        kotlinCodeFile << "fun helloWorld() = println(\"Hello World\")\n"
+        kotlinCodeFile << "}\n"
+    }
 }
 
 android {
-    compileSdk 32
+    compileSdkVersion 32
 
     defaultConfig {
         minSdk 21
@@ -26,9 +42,26 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    applicationVariants.configureEach {
+        afterEvaluate {
+            registerJavaGeneratingTask(generateKotlinCodeTask, [file("build/generated/kotlin-code")])
+        }
+    }
+    unitTestVariants.configureEach {
+        afterEvaluate {
+            registerJavaGeneratingTask(generateKotlinCodeTask, [file("build/generated/kotlin-code")])
+        }
+    }
+    testVariants.configureEach {
+        afterEvaluate {
+            registerJavaGeneratingTask(generateKotlinCodeTask, [file("build/generated/kotlin-code")])
+        }
+    }
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.4.32"
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
